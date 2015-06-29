@@ -86,18 +86,9 @@ body {
   }
 
 .m-signature-pad--footer
-  .button {
+  .button.save {
     position: absolute;
     bottom: 0;
-  }
-
-.m-signature-pad--footer
-  .button.clear {
-    left: 0;
-  }
-
-.m-signature-pad--footer
-  .button.save {
     right: 0;
   }
 

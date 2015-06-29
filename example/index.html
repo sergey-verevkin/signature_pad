@@ -29,6 +29,11 @@
     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
   </a>
 
+  <div>
+    <label>Type your name: </label>
+    <input type="text" id="type-signature" />
+  </div>
+
   <div id="signature-pad" class="m-signature-pad">
     <div class="m-signature-pad--body">
       <canvas></canvas>
@@ -36,6 +41,8 @@
     <div class="m-signature-pad--footer">
       <div class="description">Sign above</div>
       <button class="button clear" data-action="clear">Clear</button>
+      <button class="button clear" data-action="typing">Mode: Typing</button>
+      <button class="button clear" data-action="writing">Mode: Writing</button>
       <button class="button save" data-action="save">Save</button>
     </div>
   </div>

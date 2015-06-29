@@ -1,6 +1,8 @@
 var wrapper = document.getElementById("signature-pad"),
     clearButton = wrapper.querySelector("[data-action=clear]"),
     saveButton = wrapper.querySelector("[data-action=save]"),
+    typingButton = wrapper.querySelector("[data-action=typing]"),
+    writingButton = wrapper.querySelector("[data-action=writing]"),
     canvas = wrapper.querySelector("canvas"),
     signaturePad;
 
@@ -20,10 +22,24 @@ function resizeCanvas() {
 window.onresize = resizeCanvas;
 resizeCanvas();
 
-signaturePad = new SignaturePad(canvas);
+var options = {
+    typeInput: document.getElementById('type-signature'),
+    maxFontSize: 30,
+    fontface: 'Helvetica'
+};
+
+signaturePad = new SignaturePad(canvas, options);
 
 clearButton.addEventListener("click", function (event) {
     signaturePad.clear();
+});
+
+typingButton.addEventListener("click", function (event) {
+    signaturePad.setMode('typing');
+});
+
+writingButton.addEventListener("click", function (event) {
+    signaturePad.setMode('drawing');
 });
 
 saveButton.addEventListener("click", function (event) {
