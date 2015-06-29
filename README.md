@@ -57,6 +57,14 @@ signaturePad.off();
 <dd>(function) Callback when stroke begin.</dd>
 <dt>onEnd</dt>
 <dd>(function) Callback when stroke end.</dd>
+<dt>mode</dt>
+<dd>(string) drawing or typing.</dd>
+<dt>typeInput</dt>
+<dd>(element) input for type signature.</dd>
+<dt>maxFontSize</dt>
+<dd>(integer) maximum font size.</dd>
+<dt>fontface</dt>
+<dd>(string) fontface for typing signature.</dd>
 </dl>
 
 You can set options during initialization:
@@ -111,6 +119,10 @@ file_put_contents( "signature.png",$decoded_image);
 ```
 
 ## Changelog
+### 1.4.1
+* Add an ability to type a signature  
+* Add two modes: drawing and typing  
+
 ### 1.4.0
 * Add `off` method that unbinds all event handlers. [Rob-ot](https://github.com/Rob-ot)
 
