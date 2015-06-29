@@ -16,6 +16,12 @@ var SignaturePad = (function (document) {
         this.onEnd = opts.onEnd;
         this.onBegin = opts.onBegin;
 
+        this.typeInputElement = opts.typeInput;
+        this.maxFontSize = opts.maxFontSize || 300;
+        this.fontface = opts.fontface || "Helvetica";
+
+        this.mode = opts.mode || "drawing";
+
         this._canvas = canvas;
         this._ctx = canvas.getContext("2d");
         this.clear();
@@ -62,8 +68,56 @@ var SignaturePad = (function (document) {
             }
         };
 
+        this._handleType = function (event) {
+            self.clear();
+
+            if (self.typeInputElement !== null) {
+                self._ctx.textBaseline = "middle";
+                self._ctx.textAlign ="center";
+                self._fitTextOnCanvas(self.typeInputElement.value, self.fontface, self.fontsize);
+
+                if (self.typeInputElement.value === '') {
+                    self._isEmpty = true;
+                }else{
+                    self._isEmpty = false;
+                }
+            }
+        };
+
+        this.setMode(this.mode);
+    };
+
+    SignaturePad.prototype.disableDrawing = function() {
+        this._unhandleMouseEvents();
+        this._unhandleTouchEvents();
+    };
+
+    SignaturePad.prototype.enableDrawing = function() {
         this._handleMouseEvents();
         this._handleTouchEvents();
+    };
+
+    SignaturePad.prototype.disableTyping = function() {
+        this._unhandleTypeEvents();
+    };
+
+    SignaturePad.prototype.enableTyping = function() {
+        this._handleTypeEvents();
+        this._handleType();
+    };
+
+    SignaturePad.prototype.setMode = function(mode) {
+        this.disableDrawing();
+        this.disableTyping();
+        this.clear();
+
+        this.mode = mode;
+
+        if (this.mode === "drawing") {
+            this.enableDrawing();
+        } else if (this.mode === "typing") {
+            this.enableTyping();
+        }
     };
 
     SignaturePad.prototype.clear = function () {
@@ -140,6 +194,12 @@ var SignaturePad = (function (document) {
         document.addEventListener("mouseup", this._handleMouseUp);
     };
 
+    SignaturePad.prototype._unhandleMouseEvents = function () {
+        this._canvas.removeEventListener("mousedown", this._handleMouseDown);
+        this._canvas.removeEventListener("mousemove", this._handleMouseMove);
+        document.removeEventListener("mouseup", this._handleMouseUp);
+    };
+
     SignaturePad.prototype._handleTouchEvents = function () {
         var self = this;
 
@@ -151,14 +211,38 @@ var SignaturePad = (function (document) {
         document.addEventListener("touchend", this._handleTouchEnd);
     };
 
-    SignaturePad.prototype.off = function () {
-        this._canvas.removeEventListener("mousedown", this._handleMouseDown);
-        this._canvas.removeEventListener("mousemove", this._handleMouseMove);
-        document.removeEventListener("mouseup", this._handleMouseUp);
+    SignaturePad.prototype._unhandleTouchEvents = function () {
+        this._canvas.removeEventListener("touchstart", this._touchStartHandler);
+        this._canvas.removeEventListener("touchmove", this._touchMoveHandler);
+        document.removeEventListener("touchend", this._touchEndHandler);
+    };
 
-        this._canvas.removeEventListener("touchstart", this._handleTouchStart);
-        this._canvas.removeEventListener("touchmove", this._handleTouchMove);
-        document.removeEventListener("touchend", this._handleTouchEnd);
+    SignaturePad.prototype._handleTypeEvents = function () {
+        if (this.typeInputElement !== null) {
+            this.typeInputElement.addEventListener("keyup", this._handleType);
+        }
+    };
+
+    SignaturePad.prototype._unhandleTypeEvents = function () {
+        if (this.typeInputElement !== null) {
+            this.typeInputElement.removeEventListener("keyup", this._handleType);
+        }
+    };
+
+    SignaturePad.prototype._fitTextOnCanvas = function (text, fontface, maxFontSize) {
+        var fontsize = this.maxFontSize;
+        var dpr = window.devicePixelRatio || 1;
+        do  {
+            fontsize--;
+            this._ctx.font = fontsize + "pt" + " " + fontface;
+        } while (this._ctx.measureText(text).width > (this._canvas.width / dpr));
+        this._ctx.fillText(text, (this._canvas.width / dpr)/2, (this._canvas.height / dpr) / 2);
+    };
+
+    SignaturePad.prototype.off = function () {
+        this._unhandleMouseEvents();
+        this._unhandleTouchEvents();
+        this._unhandleTypeEvents();
     };
 
     SignaturePad.prototype.isEmpty = function () {
