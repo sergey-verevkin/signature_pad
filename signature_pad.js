@@ -15,7 +15,7 @@
 }(this, function () {
 
 /*!
- * Signature Pad v1.4.0
+ * Signature Pad v1.4.1
  * https://github.com/szimek/signature_pad
  *
  * Copyright 2015 Szymon Nowak
